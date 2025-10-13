@@ -11,8 +11,7 @@ class UserProfile extends Model
 
     protected $fillable = [
         'user_id',
-        'first_name',
-        'last_name',
+        'username',
         'phone',
         'date_of_birth',
         'gender',
@@ -40,13 +39,8 @@ class UserProfile extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getFullNameAttribute(): string
-    {
-        return trim($this->first_name . ' ' . $this->last_name);
-    }
-
     public function getAgeAttribute(): ?int
     {
-        return $this->date_of_birth ? $this->date_of_birth->age : null;
+        return $this->date_of_birth ? \Carbon\Carbon::parse($this->date_of_birth)->diffInYears(now()) : null;
     }
 }

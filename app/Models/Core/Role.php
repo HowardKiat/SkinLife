@@ -9,26 +9,10 @@ class Role extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'description',
-        'permissions'
-    ];
-
-    protected $casts = [
-        'permissions' => 'array',
-        'id' => 'int',
-    ];
-
-    protected $graphQLType = 'Role';
+    protected $fillable = ['name'];
 
     public function users()
     {
         return $this->hasMany(User::class);
-    }
-
-    public function hasPermission(string $permission): bool
-    {
-        return in_array($permission, $this->permissions ?? []);
     }
 }

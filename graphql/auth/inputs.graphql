@@ -1,0 +1,10 @@
+input RegisterInput {
+    username: String!
+    email: String!
+    phone: String
+    date_of_birth: Date
+    gender: String
+    password: String!
+    password_confirmation: String!
+    role_id: Int
+}

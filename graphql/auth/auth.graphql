@@ -1,0 +1,16 @@
+type AuthPayload {
+  user: User!
+  token: String!
+}
+
+extend type Mutation {
+  register(input: RegisterInput!): AuthPayload
+    @field(resolver: "App\\GraphQL\\Mutations\\AuthResolver@register")
+
+  login(email: String!, password: String!): AuthPayload
+    @field(resolver: "App\\GraphQL\\Mutations\\AuthResolver@login")
+
+  logout: Boolean
+    @guard(with: ["sanctum"])
+    @field(resolver: "App\\GraphQL\\Mutations\\AuthResolver@logout")
+}

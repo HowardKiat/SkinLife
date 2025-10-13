@@ -5,6 +5,7 @@ namespace App\Models\Appointment;
 use App\Models\Core\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Appointment\DiagnosisHistory;
 
 class Doctor extends Model
 {

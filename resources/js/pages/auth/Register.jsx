@@ -4,7 +4,7 @@ import { Activity, Mail, Lock, User, Calendar, Phone, AlertCircle, Eye, EyeOff, 
 
 export default function Register() {
     const [data, setData] = useState({
-        username: '',
+        username: '', // Used for Username
         email: '',
         phone: '',
         date_of_birth: '',
@@ -33,6 +33,10 @@ export default function Register() {
         const newPassword = e.target.value;
         setData({ ...data, password: newPassword });
         setPasswordStrength(checkPasswordStrength(newPassword));
+    };
+
+    const handleChange = (e) => {
+        setData({ ...data, [e.target.id]: e.target.value });
     };
 
     const getPasswordStrengthColor = () => {
@@ -65,7 +69,7 @@ export default function Register() {
 
         // Client-side validation
         const newErrors = {};
-        if (!data.username) newErrors.username = 'First name is required';
+        if (!data.username) newErrors.username = 'Username is required';
         if (!data.email) newErrors.email = 'Email is required';
         if (!data.password) newErrors.password = 'Password is required';
         if (data.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
@@ -88,37 +92,35 @@ export default function Register() {
                 },
                 body: JSON.stringify({
                     query: `
-                      mutation Register($input: RegisterInput!) {
-                        register(input: $input) {
-                          access_token
-                          token_type
-                          user {
-                            id
-                            email
-                            role {
-                              name
+                        mutation Register($input: RegisterInput!) {
+                            register(input: $input) {
+                                token
+                                user {
+                                    id
+                                    email
+                                    username
+                                    phone
+                                    date_of_birth
+                                    gender
+                                    role {
+                                        name
+                                    }
+                                }
                             }
-                            profile {
-                              username
-                              phone
-                              date_of_birth
-                              gender
-                            }
-                          }
                         }
-                      }
                     `,
                     variables: {
                         input: {
-                            email: data.email,
-                            password: data.password,
-                            password_confirmation: data.password_confirmation,
                             username: data.username,
+                            email: data.email,
                             phone: data.phone || null,
                             date_of_birth: data.date_of_birth || null,
                             gender: data.gender || null,
+                            password: data.password,
+                            password_confirmation: data.password_confirmation,
+                            role_id: 3 // default role
                         }
-                    },
+                    }
                 }),
             });
 
@@ -168,7 +170,7 @@ export default function Register() {
 
             {/* Main Content */}
             <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
-                <div className="max-w-2xl w-full">
+                <div className="max-w-xl w-full">
                     {/* Card */}
                     <div className="bg-white rounded-2xl shadow-xl p-8">
                         {/* Header */}
@@ -194,69 +196,35 @@ export default function Register() {
 
                         {/* Form */}
                         <div className="space-y-6">
-                            {/* Name Fields */}
-                            <div className="grid md:grid-cols-2 gap-4">
-                                {/* First Name */}
-                                <div>
-                                    <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                                        First Name *
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <User className="h-5 w-5 text-gray-400" />
-                                        </div>
-                                        <input
-                                            id="username"
-                                            type="text"
-                                            value={data.username}
-                                            onChange={(e) => setData({ ...data, username: e.target.value })}
-                                            className={`block w-full pl-10 pr-3 py-3 border ${
-                                                errors.username
-                                                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                                                    : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
-                                            } rounded-lg focus:outline-none focus:ring-2 transition-colors`}
-                                            placeholder="Jeremy"
-                                            required
-                                        />
+                            {/* Username Field */}
+                            <div>
+                                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+                                    Username *
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <User className="h-5 w-5 text-gray-400" />
                                     </div>
-                                    {errors.username && (
-                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                                            <AlertCircle className="w-4 h-4" />
-                                            {errors.username}
-                                        </p>
-                                    )}
+                                    <input
+                                        id="username"
+                                        type="text"
+                                        value={data.username}
+                                        onChange={(e) => setData({ ...data, username: e.target.value })}
+                                        className={`block w-full pl-10 pr-3 py-3 border ${
+                                            errors.username
+                                                ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                                                : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
+                                        } rounded-lg focus:outline-none focus:ring-2 transition-colors`}
+                                        placeholder="user123"
+                                        required
+                                    />
                                 </div>
-
-                                {/* Last Name */}
-                                <div>
-                                    <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Last Name *
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <User className="h-5 w-5 text-gray-400" />
-                                        </div>
-                                        <input
-                                            id="username"
-                                            type="text"
-                                            value={data.username}
-                                            onChange={(e) => setData({ ...data, username: e.target.value })}
-                                            className={`block w-full pl-10 pr-3 py-3 border ${
-                                                errors.username
-                                                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                                                    : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
-                                            } rounded-lg focus:outline-none focus:ring-2 transition-colors`}
-                                            placeholder="Doe"
-                                            required
-                                        />
-                                    </div>
-                                    {errors.username && (
-                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                                            <AlertCircle className="w-4 h-4" />
-                                            {errors.username}
-                                        </p>
-                                    )}
-                                </div>
+                                {errors.username && (
+                                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                        <AlertCircle className="w-4 h-4" />
+                                        {errors.username}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Email */}
@@ -278,7 +246,7 @@ export default function Register() {
                                                 ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
                                                 : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
                                         } rounded-lg focus:outline-none focus:ring-2 transition-colors`}
-                                        placeholder="jeremy.doe@example.com"
+                                        placeholder="user@example.com"
                                         autoComplete="username"
                                         required
                                     />
@@ -291,7 +259,7 @@ export default function Register() {
                                 )}
                             </div>
 
-                            {/* Optional Fields */}
+                            {/* Optional Fields (grid layout maintained for better spacing) */}
                             <div className="grid md:grid-cols-2 gap-4">
                                 {/* Phone */}
                                 <div>
@@ -396,7 +364,7 @@ export default function Register() {
                                                 <div
                                                     key={level}
                                                     className={`h-1 flex-1 rounded ${
-                                                        level <= passwordStrength ? getPasswordStrengthColor() : 'bg-gray-200'
+                                                         level <= passwordStrength ? getPasswordStrengthColor() : 'bg-gray-200'
                                                     }`}
                                                 />
                                             ))}

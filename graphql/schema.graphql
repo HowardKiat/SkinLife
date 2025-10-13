@@ -1,0 +1,14 @@
+#import auth/auth.graphql
+#import user/user.graphql
+#import user/role.graphql
+#import auth/inputs.graphql
+
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+type Query {
+    hello: String @field(resolver: "App\\GraphQL\\Queries\\HelloQuery@resolve")
+}
+
+type Mutation {
+  _empty: String
+}

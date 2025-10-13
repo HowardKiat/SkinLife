@@ -1,0 +1,9 @@
+type Role {
+  id: ID!
+  name: String!
+}
+
+type Query {
+  roles: [Role!]! @all(model: "App\\Models\\Core\\Role")
+}
+
